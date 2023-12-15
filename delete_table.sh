@@ -38,7 +38,10 @@ fi
 # list tables in current DB, then enter a table name to delete
 echo "choose a table to delete:"
 for table in /Databases/$dbName/*; do
-    echo "-$(basename "$table")"
+    name="$(basename "$table")"
+    if [[ $table != *"schema"* ]]; then
+        echo "-$name"
+    fi
 done
 read tableName
 
@@ -50,8 +53,16 @@ if ! [[ -f "/Databases/$dbName/$tableName.txt" ]]; then
 fi
 
 
-# delete table
+# if selected table is a schema, exit with a msg
+if [[ $tableName == *"schema"* ]]; then
+    echo "you can not delete schemas directly, please just enter the table name"
+    exit 1
+fi
+
+
+# delete table and its schema
 sudo rm /Databases/$dbName/$tableName.txt
+sudo rm "/Databases/$dbName/$tableName schema.txt"
 
 
 echo "table deleted successfully!"

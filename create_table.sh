@@ -38,6 +38,10 @@ fi
 #insert table name
 echo "enter table name:"
 read tableName
+if [[ $tableName == *"schema"* ]]; then
+    echo "Invalid table name. Please enter a name that does not include the word 'schema'. Exiting..."
+    exit 1
+fi
 
 
 #check if table already exist
@@ -47,8 +51,9 @@ if [[ -f "/Databases/$dbName/$tableName.txt" ]]; then
 fi
 
 
-#create the table
+#create the table and its schema
 sudo touch "/Databases/$dbName/$tableName.txt"
+sudo touch "/Databases/$dbName/$tableName schema.txt"
 
 
 #insert columns count
@@ -56,12 +61,12 @@ echo "how many columns do you want to create? excluding id column"
 read cCount
 
 
-# ask user to insert columns names
-sudo sh -c echo "id" >> "/Databases/$dbName/$tableName.txt"
+# Ask user to insert columns names
+sudo sh -c 'echo "id" >> "/Databases/'"$dbName"'/'"$tableName"' schema.txt"'
 for ((i=1; i<=$cCount; i++)); do
     echo "Enter a name for column #$((i+1)):"
     read columnName
-    sudo sh -c "echo "$columnName" >> "/Databases/$dbName/$tableName.txt""
+    sudo sh -c 'echo "'"$columnName"'" >> "/Databases/'"$dbName"'/'"$tableName"' schema.txt"'
 done
 
 
