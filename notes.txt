@@ -1,0 +1,5 @@
+sudo chmod +x filename.sh   //to make the bash file executable  
+
+usermod -aG sudo username   //to make a new user a super user
+
+getent group groupname    //print group members
