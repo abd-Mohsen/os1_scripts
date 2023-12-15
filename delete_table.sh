@@ -50,9 +50,8 @@ if ! [[ -f "/Databases/$dbName/$tableName.txt" ]]; then
 fi
 
 
-# delete group(metadata) and db
-sudo rm -r /Databases/$dbName
-sudo groupdel $dbName
+# delete table
+sudo rm /Databases/$dbName/$tableName.txt
 
 
-echo "deleted successfully!"
+echo "table deleted successfully!"
