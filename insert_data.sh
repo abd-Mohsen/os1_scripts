@@ -35,8 +35,8 @@ if ! $valid_user; then
 fi   
 
 
-# list tables in current DB, then enter a table name to delete
-echo "choose a table to delete:"
+# list tables in current DB, then enter a table name to insert data in it
+echo "choose a table to insert in:"
 for table in /Databases/$dbName/*; do
     name="$(basename "$table" .txt)"
     if [[ $table != *"schema"* ]]; then
@@ -47,7 +47,8 @@ read tableName
 
 
 # if selected name is not listed, exit with a msg
-if ! [[ -f "/Databases/$dbName/$tableName.txt" ]]; then
+tableFile="/Databases/$dbName/$tableName.txt"
+if ! [[ -f $tableFile ]]; then
     echo "DB: $tableName does not exist in $dbName. Exiting..."
     exit 1
 fi
@@ -55,14 +56,44 @@ fi
 
 # if selected table is a schema, exit with a msg
 if [[ $tableName == *"schema"* ]]; then
-    echo "you can not delete schemas directly, please just enter the table name"
+    echo "you can not insert to schemas, please just enter the table name"
     exit 1
 fi
 
 
-# delete table and its schema
-sudo rm /Databases/$dbName/$tableName.txt
-sudo rm "/Databases/$dbName/$tableName schema.txt"
+# Read schema file to get column names
+schemaFile="/Databases/$dbName/$tableName schema.txt"
+columns=()
+while IFS= read -r column; do
+    columns+=("$column")
+done < "$schemaFile"
 
 
-echo "table deleted successfully!"
+# Prompt user to enter data for each column
+data=()
+for ((i=1; i< ${#columns[@]}; i++)); do
+    echo "Enter data for column \"${columns[i]}\":"
+    read inputData
+    data+=("$inputData")
+done
+
+
+# Generate unique ID for new row
+lastID=$(tail -n 1 "$tableFile" | cut -d ',' -f 1)
+newID=$((lastID + 1))
+
+
+# Combine ID and entered data into a single line
+line="id = $newID, "
+for ((i=1; i<${#columns[@]}; i++)); do
+    line+="${columns[i]} = ${data[i-1]}, "
+done
+line=${line%, }
+
+
+# Append the line to the table file
+echo "$line" | sudo tee -a "$tableFile" > /dev/null
+
+
+echo "row inserted successfully!"
+
