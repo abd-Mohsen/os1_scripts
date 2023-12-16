@@ -30,7 +30,7 @@ if id -nG "$USER" | grep -qw "$dbName"; then
 fi
 
 if ! $valid_user; then
-    echo "only owner and admins are alowed to delete a DB. Exiting..."
+    echo "only owner and admins are allowed to delete a DB. Exiting..."
     exit 1
 fi   
 
@@ -56,7 +56,7 @@ fi
 
 # if selected table is a schema, exit with a msg
 if [[ $tableName == *"schema"* ]]; then
-    echo "you can not insert to schemas, please just enter the table name"
+    echo "you can not insert to schemas, please just enter the table name. Exiting..."
     exit 1
 fi
 

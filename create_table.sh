@@ -30,7 +30,7 @@ if id -nG "$USER" | grep -qw "$dbName"; then
 fi
 
 if ! $valid_user; then
-    echo "only owner and admins are alowed to empty a DB. Exiting..."
+    echo "only owner and admins are allowed to create a table in their DB. Exiting..."
     exit 1
 fi   
 

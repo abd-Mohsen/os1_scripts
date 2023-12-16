@@ -30,13 +30,13 @@ if id -nG "$USER" | grep -qw "$dbName"; then
 fi
 
 if ! $valid_user; then
-    echo "only owner and admins are allowed to delete a table in their DB. Exiting..."
+    echo "only owner and admins are alowed to get data from their DB. Exiting..."
     exit 1
 fi   
 
 
-# list tables in current DB, then enter a table name to delete
-echo "choose a table to delete:"
+# list tables in current DB, then enter a table name to get records from
+echo "choose a table to insert in:"
 for table in /Databases/$dbName/*; do
     name="$(basename "$table" .txt)"
     if [[ $table != *"schema"* ]]; then
@@ -47,7 +47,8 @@ read tableName
 
 
 # if selected name is not listed, exit with a msg
-if ! [[ -f "/Databases/$dbName/$tableName.txt" ]]; then
+tableFile="/Databases/$dbName/$tableName.txt"
+if ! [[ -f $tableFile ]]; then
     echo "DB: $tableName does not exist in $dbName. Exiting..."
     exit 1
 fi
@@ -55,14 +56,22 @@ fi
 
 # if selected table is a schema, exit with a msg
 if [[ $tableName == *"schema"* ]]; then
-    echo "you can not delete schemas directly, please just enter the table name. Exiting..."
+    echo "you can not insert to schemas, please just enter the table name. Exiting..."
     exit 1
 fi
 
 
-# delete table and its schema
-sudo rm /Databases/$dbName/$tableName.txt
-sudo rm "/Databases/$dbName/$tableName schema.txt"
+# get all data or search for a record?
+echo "get all data(all) or search for a record(search)?"
+read choice
 
-
-echo "table deleted successfully!"
+if [[ $choice == 'all' ]]; then
+    grep -v '^deleted' $tableFile
+elif [[ $choice == 'search' ]]; then
+    echo "enter a word to search for:"
+    read query
+    grep -v '^deleted' $tableFile | grep -w "$query"
+else
+    echo "invalid input. Exiting..."
+    exit 1
+fi
