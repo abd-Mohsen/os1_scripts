@@ -65,7 +65,7 @@ read cCount
 sudo sh -c 'echo "id" >> "/Databases/'"$dbName"'/'"$tableName"' schema.txt"'
 for ((i=1; i<=$cCount; i++)); do
     echo "Enter a name for column #$((i+1)):"
-    read columnName
+    read columnName # do not let commas
     sudo sh -c 'echo "'"$columnName"'" >> "/Databases/'"$dbName"'/'"$tableName"' schema.txt"'
 done
 

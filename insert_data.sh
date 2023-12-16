@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # list only databases that current user can access
-echo "choose a DB to delete a table from:"
+echo "choose a DB to insert data in its table:"
 for db in /Databases/*; do
     name="$(basename "$db")"
     if id -nG "$USER" | grep -qw "$name"; then
@@ -30,7 +30,7 @@ if id -nG "$USER" | grep -qw "$dbName"; then
 fi
 
 if ! $valid_user; then
-    echo "only owner and admins are allowed to delete a DB. Exiting..."
+    echo "only owner and admins are allowed to insert in a table in their DB. Exiting..."
     exit 1
 fi   
 
@@ -74,7 +74,7 @@ data=()
 for ((i=1; i< ${#columns[@]}; i++)); do
     echo "Enter data for column \"${columns[i]}\":"
     read inputData
-    data+=("$inputData")
+    data+=("$inputData") # do not let commas
 done
 
 
@@ -88,7 +88,6 @@ line="id = $newID, "
 for ((i=1; i<${#columns[@]}; i++)); do
     line+="${columns[i]} = ${data[i-1]}, "
 done
-line=${line%, }
 
 
 # Append the line to the table file

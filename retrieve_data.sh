@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # list only databases that current user can access
-echo "choose a DB to delete a table from:"
+echo "choose a DB to get data from:"
 for db in /Databases/*; do
     name="$(basename "$db")"
     if id -nG "$USER" | grep -qw "$name"; then
