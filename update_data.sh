@@ -62,7 +62,7 @@ fi
 
 
 # Read id and validate it
-lastID=$(tail -n 1 "$tableFile" | cut -d ',' -f 1)
+lastID=$(awk '/./{line=$0} END{print NR}' "$tableFile")
 lastID=$((lastID))
 echo "select record to update (enter id from 1-$lastID):"
 read id

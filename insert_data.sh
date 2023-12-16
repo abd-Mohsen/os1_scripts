@@ -79,7 +79,7 @@ done
 
 
 # Generate unique ID for new row
-lastID=$(tail -n 1 "$tableFile" | cut -d ',' -f 1)
+lastID=$(awk '/./{line=$0} END{print NR}' "$tableFile")
 newID=$((lastID + 1))
 
 
